@@ -1,0 +1,13 @@
+[package]
+name = "ffmpeg-jpeg"
+description = "a simple example use of the ffmpeg crate to read a stream and output jpegs"
+version = "0.0.0"
+
+[dependencies]
+image = "0.7.0"
+
+[dependencies.ffmpeg]
+# local clone of meh's rust-ffmpeg repo with a hack to depend on ffmpeg-sys 2.8.6-1 to work around a cargo bug #2472
+path = "../../rust-ffmpeg"
+default-features = false
+features = ["codec", "format", "software-scaling"]
