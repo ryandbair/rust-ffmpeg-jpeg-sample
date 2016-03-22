@@ -25,12 +25,13 @@ fn main() {
         (input_stream.index(), input_codec)
     };
 
-    // TODO: try filter_map here, it might look a little cleaner
     let video_packets =
         input_ctx.packets()
                  .skip_while(|&(_, ref packet)| !packet.is_key())
-                 .filter(|&(ref stream, _)| stream.index() == idx)
-                 .map(|(_, packet)| packet)
+                 .filter_map(|(stream, packet)| match stream.index() {
+                     0 => Some(packet),
+                     _ => None,
+                 })
                  .take(500);
 
     let enc_codec = codec::encoder::find(codec::Id::H264).unwrap();
