@@ -18,7 +18,7 @@ fn main() {
 
     // we need to scope this since input_ctx.streams() borrows the reference immutably
     // but we need it mutably below when we retrieve the packets
-    let (idx, mut codec) = {
+    let (input_stream_idx, mut codec) = {
         let input_stream = input_ctx.streams().best(media::Type::Video).expect("failed to find video stream");
         let input_codec = input_stream.codec().decoder().video().unwrap();
 
@@ -29,7 +29,7 @@ fn main() {
         input_ctx.packets()
                  .skip_while(|&(_, ref packet)| !packet.is_key())
                  .filter_map(|(stream, packet)| match stream.index() {
-                     0 => Some(packet),
+                     stream_idx if stream_idx == input_stream_idx => Some(packet),
                      _ => None,
                  })
                  .take(500);
