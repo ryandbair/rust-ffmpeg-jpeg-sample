@@ -56,6 +56,7 @@ fn main() {
         video_out.set_format(format::Pixel::YUV422P);
         video_out.set_time_base(codec.time_base());
         video_out.set_bit_rate(64000);
+        video_out.set_threading(codec::threading::Config::count(1));
 
         let mut encoder = video_out.open_as(enc_codec).unwrap();
         encoder.set_time_base(codec.time_base());
