@@ -71,7 +71,7 @@ fn main() {
     let mut rgb_frame = util::frame::Video::new(util::format::Pixel::RGB24, codec.width(), codec.height());
     let mut yuv_frame = util::frame::Video::new(util::format::Pixel::YUV422P, codec.width(), codec.height());
 
-    let mut pts = 0;
+    let mut pts = 0..;
 
     for packet in video_packets {
         match codec.decode(&packet, &mut frame) {
@@ -86,8 +86,7 @@ fn main() {
                 let mut yuv_converter = frame.converter(format::Pixel::YUV422P).unwrap();
                 yuv_converter.run(&frame, &mut yuv_frame).unwrap();
 
-                yuv_frame.set_pts(Some(pts));
-                pts += 1;
+                yuv_frame.set_pts(pts.next());
 
                 match encoder.encode(&yuv_frame, &mut encoded_packet) {
                     Ok(true) => {
